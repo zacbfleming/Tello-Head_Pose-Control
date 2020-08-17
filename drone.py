@@ -1,19 +1,18 @@
 import socket
-import multiprocessing
+#import multiprocessing
 import threading
 import cv2
 import numpy as np
 from openvino.inference_engine import IECore, IENetwork, IEPlugin
-#import math
 import sys
 import logging as log
-from time import time 
+#from time import time 
 from argparse import ArgumentParser, SUPPRESS
 import os
 import time 
 from tello import Tello
-from math import *
-from signs import MASL
+#from math import *
+#from signs import MASL
 
 
 
@@ -176,32 +175,32 @@ def main():
         pitch_list.append(pitch)
         yw=-2*((int(yaw/10))*10)
         pt=2*((int(pitch/10))*10)
+        rl = 2*((int(roll/10))*10)
         frame2 = cv2.rectangle(frame2,(box[0],box[1]),(box[2],box[3]),(0,0,255),2)
         
        # cv2.putText(frame2, ('takeoff: %.0f ' % data_count), (50, 300), cv2.FONT_HERSHEY_SIMPLEX, 1,(255, 0,0), 1,cv2.LINE_AA)
         if abs(yw) < 11 and abs(pt) < 11:
             data_count+=1
             
-       # if data_count < 10 and abs(yw) > 11 or data_count<10 and pt > abs(11):
-        #    data_count = 0
+      #  if data_count < 10 and abs(yw) > 11 or data_count<10 and pt > abs(11):
+       #     data_count = 0
         if data_count == 10:
             try:
                 #print('takeoff')
                 CLIENT.send_control_command('takeoff')
             except: pass
-       # time.sleep(1)
         if data_count > 10:            
             try:
                 CLIENT.send_rc_control(left_right_velocity=0, forward_backward_velocity=int(pt), up_down_velocity=0,yaw_velocity=int(yw))
             except: pass
             
            # cv2.putText(frame2, ('takeoff: %.0f ' % data_count), (50, 300), cv2.FONT_HERSHEY_SIMPLEX, 1,(255, 0,0), 1,cv2.LINE_AA)
-            cv2.putText(frame2, ('Yaw: %.3f ' % (-yw) ), (400, 150), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 1,cv2.LINE_AA)
-            cv2.putText(frame2, ('pitch: %.3f ' % pt), (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 1,cv2.LINE_AA)
-     #   cv2.putText(frame2, ('Roll: %.3f ' % roll), (200, 300), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 255, 0), 1,cv2.LINE_AA)
-            key_pressed=cv2.waitKey(60)
-            cv2.imshow('frame',frame2)
-            if key_pressed == 27:
+        cv2.putText(frame2, ('Yaw: %.3f ' % (yw) ), (400, 150), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 1,cv2.LINE_AA)
+        cv2.putText(frame2, ('pitch: %.3f ' % pt), (20, 150), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 0, 255), 1,cv2.LINE_AA)
+        cv2.putText(frame2, ('Roll: %.3f ' % rl), (20, 300), cv2.FONT_HERSHEY_SIMPLEX, 1,(0, 255, 0), 1,cv2.LINE_AA)
+        key_pressed=cv2.waitKey(60)
+        cv2.imshow('frame',frame2)
+        if key_pressed == 27:
             #print(np.std(yaw_list))
             #print(np.std(pitch_list))
                 CLIENT.send_control_command('land')
